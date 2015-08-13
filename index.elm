@@ -5,39 +5,25 @@ import Time exposing (every, second)
 import Date exposing (fromTime, hour)
 import Html.Attributes exposing (style, class)
 
+import Quarterly exposing (..)
+
 model = { time = 0 }
 
 clockSignal = every second
         
          
-justHour = fromTime >> hour >> toString
+justHour = fromTime >> hour >> Basics.toString
     
 hourView model = h1 [] [ model.time |> justHour |> text ]
 
 
-quarterlyInWords hour = if
-  | hour < 6 -> "Before sunrise"
-  | hour < 13 -> "After sunrise"
-  | hour > 21 -> "Night"
-  | hour > 16 ->  "Evening"
-  | hour > 12 -> "After midday"
-  | otherwise -> "Err.."
-
-quarterlyInColor hour = if
-  | hour < 6 -> "lightBlue"
-  | hour < 13 -> "lightYellow"
-  | hour > 21 -> "black"
-  | hour > 16 ->  "darkred"
-  | hour > 12 -> "lightOrange"
-  | otherwise -> "green"
-
-quarterly = fromTime >> hour >> quarterlyInWords
+quarterly = fromTime >> hour >> toQuarterly >> Quarterly.toString
 
 quarterlyView model = let 
-  time = model.time |> fromTime |> hour
+    time = model.time |> fromTime |> hour |> toQuarterly
   in  
     div [ 
-        style [("backgroundColor", time |> quarterlyInColor)], 
+        style [("backgroundColor", time |> toColor)], 
         class "clock-background" 
     ] [
       div [
@@ -45,7 +31,7 @@ quarterlyView model = let
       ] 
       [ 
         time 
-          |> quarterlyInWords 
+          |> Quarterly.toString 
           |> text 
      ]
    ]

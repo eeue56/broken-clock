@@ -4,6 +4,9 @@
 }
 
 .clock-time {
+    font-size: 200px;
+
+
     text-align: center;
     position: relative;
     top: 50%;
