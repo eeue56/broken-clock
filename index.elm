@@ -1,8 +1,9 @@
+module BrokenClock where
 import Html exposing (div, text, h1)
 import Html.Events exposing (onClick)
 import Time exposing (every, second)
 import Date exposing (fromTime, hour)
-import Html.Attributes exposing (style)
+import Html.Attributes exposing (style, class)
 
 model = { time = 0 }
 
@@ -35,10 +36,14 @@ quarterly = fromTime >> hour >> quarterlyInWords
 quarterlyView model = let 
   time = model.time |> fromTime |> hour
   in  
-    div [style [("backgroundColor", time |> quarterlyInColor)]] [ 
-    time 
-      |> quarterlyInWords 
-      |> text 
+    div [
+      style [("backgroundColor", time |> quarterlyInColor)],
+      class ("clock")
+    ] 
+    [ 
+      time 
+        |> quarterlyInWords 
+        |> text 
    ]
 
 view = quarterlyView
