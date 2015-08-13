@@ -1,9 +1,8 @@
-import Html exposing (div, button, text, h1)
+import Html exposing (div, text, h1)
 import Html.Events exposing (onClick)
 import Time exposing (every, second)
 import Date exposing (fromTime, hour)
 import Html.Attributes exposing (style)
-import Color exposing (lightBlue, lightYellow, black, darkRed, lightOrange, green)
 
 model = { time = 0 }
 
@@ -24,24 +23,25 @@ quarterlyInWords hour = if
   | otherwise -> "Err.."
 
 quarterlyInColor hour = if
-  | hour < 6 -> lightBlue
-  | hour < 13 -> lightYellow
-  | hour > 21 -> black
-  | hour > 16 ->  darkRed
-  | hour > 12 -> lightOrange
-  | otherwise -> green
+  | hour < 6 -> "lightBlue"
+  | hour < 13 -> "lightYellow"
+  | hour > 21 -> "black"
+  | hour > 16 ->  "darkred"
+  | hour > 12 -> "lightOrange"
+  | otherwise -> "green"
 
 quarterly = fromTime >> hour >> quarterlyInWords
 
-quaterlyView model = h1 [style [("backgroundColor", model.time |> quarterlyInColor |> toString)]] [ 
-  model.time 
-    |> quarterly 
-    |> text 
- ]
+quarterlyView model = let 
+  time = model.time |> fromTime |> hour
+  in  
+    div [style [("backgroundColor", time |> quarterlyInColor)]] [ 
+    time 
+      |> quarterlyInWords 
+      |> text 
+   ]
 
-view model =
-  div []
-    [quaterlyView model]
+view = quarterlyView
 
 update newTime =
   { model | time <- newTime }
