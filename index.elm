@@ -36,14 +36,18 @@ quarterly = fromTime >> hour >> quarterlyInWords
 quarterlyView model = let 
   time = model.time |> fromTime |> hour
   in  
-    div [
-      style [("backgroundColor", time |> quarterlyInColor)],
-      class ("clock")
-    ] 
-    [ 
-      time 
-        |> quarterlyInWords 
-        |> text 
+    div [ 
+        style [("backgroundColor", time |> quarterlyInColor)], 
+        class "clock-background" 
+    ] [
+      div [
+        class "clock-time"
+      ] 
+      [ 
+        time 
+          |> quarterlyInWords 
+          |> text 
+     ]
    ]
 
 view = quarterlyView
