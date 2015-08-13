@@ -7,14 +7,17 @@ import Html.Attributes exposing (style, class)
 
 import Quarterly exposing (..)
 
-model = { time = 0 }
+type ClockType = Hourly | Quarterly
+
+model = { time = 0, clockType = Quarterly }
 
 clockSignal = every second
-        
-         
+
+
 justHour = fromTime >> hour >> Basics.toString
     
 hourView model = h1 [] [ model.time |> justHour |> text ]
+
 
 
 quarterly = fromTime >> hour >> toQuarterly >> Quarterly.toString
@@ -36,7 +39,11 @@ quarterlyView model = let
      ]
    ]
 
-view = quarterlyView
+
+
+view model = case model.clockType of 
+  Hourly -> hourView model
+  Quarterly -> quarterlyView model
 
 update newTime =
   { model | time <- newTime }
