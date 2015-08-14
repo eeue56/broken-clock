@@ -13,15 +13,15 @@ justHour = fromTime >> hour
 
 hourView model = h1 [] [ model.time |> justHour |> Basics.toString |> text ]
 
+typeOption model optionName = option 
+      [selected <| optionName == model.clockType] 
+      [Basics.toString optionName |> text] 
+
 clockTypeSelectView : Signal.Address Update -> Clock -> Html.Html
-clockTypeSelectView address model = let
-    typeOption x = option 
-      [selected <| x == model.clockType ] 
-      [Basics.toString x |> text]
-  in
-     select 
-      [on "input" targetValue (Signal.message address << TypeUpdate << toClockType)] 
-      <| List.map typeOption [Hourly, Quarterly]
+clockTypeSelectView address model = select 
+    [on "input" targetValue (Signal.message address << TypeUpdate << toClockType),
+     class "clock-type-dropdown"] 
+    <| List.map (typeOption model) [Hourly, Quarterly]
 
 quarterly = fromTime >> hour >> toQuarterly >> Quarterly.toString
 
