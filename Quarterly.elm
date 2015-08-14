@@ -15,7 +15,7 @@ toColor : QuarterlyTime -> String
 toColor q = case q of
   BeforeSunrise -> "lightBlue"
   AfterSunrise -> "lightYellow"
-  Night -> "black"
+  Night -> "rgb(17, 32, 100)"
   Evening ->  "rgb(174, 11, 11)"
   AfterMidday -> "lightOrange"
   Err -> "green"

@@ -8,6 +8,8 @@ type alias Alarm = {
     goingOff: Bool
 }
 
+type AlarmPart = Hour Int | Minute Int | Second Int
+
 alarmsGoingOff : List Alarm -> List Alarm
 alarmsGoingOff = List.filter (\x -> x.goingOff)
 

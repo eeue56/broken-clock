@@ -5,6 +5,8 @@ import Html.Events exposing (targetValue, on, onClick)
 import Date exposing (fromTime, hour)
 import Html.Attributes exposing (style, class, value, selected)
 
+import String exposing (toInt)
+
 import Graphics.Element exposing (show)
 
 import Time exposing (second)
@@ -13,6 +15,8 @@ import Quarterly exposing (..)
 import Clock exposing (..)
 import Updates exposing (..)
 import Alarms exposing (..)
+
+import GenericViews exposing (..)
 
 justHour = fromTime >> hour 
 
@@ -32,6 +36,34 @@ addAlarmView : Signal.Address Update -> Clock -> Html.Html
 addAlarmView address model = button 
   [onClick address (NewAlarm <| Alarm (model.time + second) True False)]
   [text "Add alarm"]
+
+timeToNumber : String -> Int 
+timeToNumber time = case toInt time of
+  Ok x -> x
+  Result.Err _ -> 0
+
+hoursView : Signal.Address Update -> Html.Html
+hoursView address = numberSelectView 
+  [on "input" targetValue (Signal.message address << AlarmTime << Hour << timeToNumber)] 
+  1
+  24
+
+minutesView : Signal.Address Update -> Html.Html
+minutesView address = numberSelectView 
+  [on "input" targetValue (Signal.message address << AlarmTime << Minute << timeToNumber)] 
+  1
+  60
+
+secondsView : Signal.Address Update -> Html.Html
+secondsView address = numberSelectView 
+  [on "input" targetValue (Signal.message address << AlarmTime << Second << timeToNumber)] 
+  1 
+  60
+
+
+alarmDateView : Signal.Address Update -> Clock -> Html.Html
+alarmDateView address clock = 
+  div [] [hoursView address, minutesView address, secondsView address]
 
 quarterlyView model = let 
   time = model.time |> justHour |> toQuarterly
@@ -62,6 +94,7 @@ view address model = div []
   [
     fromElement <| show model,
     clockTypeSelectView address model,
+    alarmDateView address model, 
     addAlarmView address model,
     mainView model
   ]
