@@ -6,7 +6,7 @@ import Quarterly exposing (..)
 import Views exposing (..)
 import Clock exposing (..)
 import Updates exposing (..)
-import Alarms exposing (Alarm)
+import Alarms exposing (Alarm, setOffAlarm)
 
 actions : Signal.Mailbox Update
 actions = Signal.mailbox Updates.Nothing
@@ -19,9 +19,12 @@ model = { time = Time.second,
 
 clockSignal = Signal.map (TimeUpdate) <| every second
 
+updateAlarms : Clock -> Clock
+updateAlarms clock = { clock | alarms <- List.map (setOffAlarm clock.time) clock.alarms }
+
 update: Update -> Clock -> Clock
 update update clock = case update of
-  TimeUpdate newTime -> { clock | time <- newTime }
+  TimeUpdate newTime -> updateAlarms { clock | time <- newTime }
   TypeUpdate newType -> { clock | clockType <- newType }
   NewAlarm alarm -> { clock | alarms <- (alarm :: clock.alarms) }
   Updates.Nothing -> clock

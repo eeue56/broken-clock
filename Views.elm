@@ -30,14 +30,16 @@ clockTypeSelectView address model = select
 
 addAlarmView : Signal.Address Update -> Clock -> Html.Html
 addAlarmView address model = button 
-  [onClick address (NewAlarm <| Alarm second True)]
+  [onClick address (NewAlarm <| Alarm (model.time + second) True False)]
   [text "Add alarm"]
 
 quarterlyView model = let 
   time = model.time |> justHour |> toQuarterly
+  alarms = (List.length <| alarmsGoingOff model.alarms) > 0 
+  coloring model = if not alarms then time |> toColor else "orange"
   in  
     div [ 
-        style [("backgroundColor", time |> toColor)], 
+        style [("backgroundColor", coloring model)], 
         class "clock-background" 
     ] [
       div [
@@ -46,6 +48,7 @@ quarterlyView model = let
       [ 
         time 
           |> Quarterly.toString 
+          |> (\x -> if alarms then x ++ "\nDo something! Do something!" else x)
           |> text 
      ]
    ]
