@@ -1,15 +1,18 @@
 module Views where
 
-import Html exposing (div, text, option, select, h1, fromElement)
+import Html exposing (div, text, option, select, h1, button, fromElement)
 import Html.Events exposing (targetValue, on, onClick)
 import Date exposing (fromTime, hour)
 import Html.Attributes exposing (style, class, value, selected)
 
 import Graphics.Element exposing (show)
 
+import Time exposing (second)
+
 import Quarterly exposing (..)
 import Clock exposing (..)
 import Updates exposing (..)
+import Alarms exposing (..)
 
 justHour = fromTime >> hour 
 
@@ -24,6 +27,11 @@ clockTypeSelectView address model = select
   [on "input" targetValue (Signal.message address << TypeUpdate << toClockType),
    class "clock-type-dropdown"] 
   <| List.map (typeOption model) [Hourly, Quarterly]
+
+addAlarmView : Signal.Address Update -> Clock -> Html.Html
+addAlarmView address model = button 
+  [onClick address (NewAlarm <| Alarm second True)]
+  [text "Add alarm"]
 
 quarterlyView model = let 
   time = model.time |> justHour |> toQuarterly
@@ -50,6 +58,7 @@ view : Signal.Address (Update) -> Clock -> Html.Html
 view address model = div [] 
   [
     fromElement <| show model,
-    clockTypeSelectView address model, 
+    clockTypeSelectView address model,
+    addAlarmView address model,
     mainView model
   ]
