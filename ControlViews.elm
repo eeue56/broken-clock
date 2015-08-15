@@ -5,6 +5,7 @@ import Html.Events exposing (targetValue, on, onClick)
 import Html.Attributes exposing (style, class, value, selected)
 
 import String exposing (toInt)
+import Random exposing (initialSeed)
 
 import Time exposing (second, minute, hour)
 
@@ -31,6 +32,14 @@ addAlarmView address model = button
   [onClick address (NewAlarm <| Alarm (newAlarmTime model) True False)]
   [text "Add alarm"]
 
+addRandomAlarmView : Signal.Address Update -> Clock -> Html.Html
+addRandomAlarmView address model =
+  let
+    (newTime, _) = newRandomRoughTime <| initialSeed 5
+  in
+    button 
+      [onClick address (NewAlarm <| Alarm (addRoughTime model.time newTime) True False)]
+      [text "Add random future alarm"]
 
 timeToNumber : String -> Int 
 timeToNumber time = case toInt time of
@@ -58,4 +67,4 @@ secondsView address = numberSelectView
 
 alarmDateView : Signal.Address Update -> Clock -> Html.Html
 alarmDateView address clock = 
-  div [] [text "time til the alarm goes off", hoursView address, minutesView address, secondsView address]
+  div [] [ text "time til the alarm goes off", hoursView address, minutesView address, secondsView address ]

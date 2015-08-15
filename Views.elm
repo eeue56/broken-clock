@@ -49,5 +49,6 @@ view address model = div []
     clockTypeSelectView address model,
     alarmDateView address model, 
     addAlarmView address model,
+    addRandomAlarmView address model,
     mainView model
   ]
