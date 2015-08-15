@@ -6,7 +6,7 @@ import Html.Attributes exposing (style, class, value, selected)
 
 import String exposing (toInt)
 
-import Time exposing (second)
+import Time exposing (second, minute, hour)
 
 import Updates exposing (..)
 import Clock exposing (..)
@@ -26,8 +26,20 @@ clockTypeSelectView address model = select
   <| List.map (typeOption model) [Hourly, Quarterly]
 
 addAlarmView : Signal.Address Update -> Clock -> Html.Html
-addAlarmView address model = button 
-  [onClick address (NewAlarm <| Alarm (model.time + second) True False)]
+addAlarmView address model = 
+  let
+    newAlarmTime : Clock -> Time.Time
+    newAlarmTime model = 
+      let
+        parts = model.parts
+        newSeconds = ((toFloat <| parts.second) * second)
+        newMinutes = ((toFloat <| parts.minute) * minute)
+        newHours = ((toFloat <| parts.hour) * hour)
+      in
+        model.time + newHours + newMinutes + newMinutes
+  in
+    button 
+  [onClick address (NewAlarm <| Alarm (newAlarmTime model) True False)]
   [text "Add alarm"]
 
 
@@ -45,16 +57,16 @@ hoursView address = numberSelectView
 minutesView : Signal.Address Update -> Html.Html
 minutesView address = numberSelectView 
   [on "input" targetValue (Signal.message address << AlarmTime << Minute << timeToNumber)] 
-  1
-  60
+  0
+  59
 
 secondsView : Signal.Address Update -> Html.Html
 secondsView address = numberSelectView 
   [on "input" targetValue (Signal.message address << AlarmTime << Second << timeToNumber)] 
-  1 
-  60
+  0 
+  59
 
 
 alarmDateView : Signal.Address Update -> Clock -> Html.Html
 alarmDateView address clock = 
-  div [] [hoursView address, minutesView address, secondsView address]
+  div [] [text "time til the alarm goes off", hoursView address, minutesView address, secondsView address]
