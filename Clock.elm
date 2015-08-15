@@ -21,3 +21,13 @@ type alias Clock = {
 toClockType x = if
   | x == "Hourly" -> Hourly
   | otherwise -> Quarterly
+
+newAlarmTime : Clock -> Time.Time
+newAlarmTime model = 
+  let
+    parts = model.parts
+    newSeconds = ((toFloat <| parts.second) * second)
+    newMinutes = ((toFloat <| parts.minute) * minute)
+    newHours = ((toFloat <| parts.hour) * hour)
+  in
+    model.time + newHours + newMinutes + newMinutes

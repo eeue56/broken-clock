@@ -25,20 +25,9 @@ clockTypeSelectView address model = select
    class "clock-type-dropdown"] 
   <| List.map (typeOption model) [Hourly, Quarterly]
 
+
 addAlarmView : Signal.Address Update -> Clock -> Html.Html
-addAlarmView address model = 
-  let
-    newAlarmTime : Clock -> Time.Time
-    newAlarmTime model = 
-      let
-        parts = model.parts
-        newSeconds = ((toFloat <| parts.second) * second)
-        newMinutes = ((toFloat <| parts.minute) * minute)
-        newHours = ((toFloat <| parts.hour) * hour)
-      in
-        model.time + newHours + newMinutes + newMinutes
-  in
-    button 
+addAlarmView address model = button 
   [onClick address (NewAlarm <| Alarm (newAlarmTime model) True False)]
   [text "Add alarm"]
 
