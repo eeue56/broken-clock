@@ -34,12 +34,9 @@ addAlarmView address model = button
 
 addRandomAlarmView : Signal.Address Update -> Clock -> Html.Html
 addRandomAlarmView address model =
-  let
-    (newTime, _) = newRandomRoughTime <| initialSeed 5
-  in
-    button 
-      [onClick address (NewAlarm <| Alarm (addRoughTime model.time newTime) True False)]
-      [text "Add random future alarm"]
+  button 
+    [onClick address (NewAlarm <| Alarm (addRoughTime model.time <| newRandomRoughTime <| initialSeed <| round model.time) True False)]
+    [text "Add random future alarm"]
 
 timeToNumber : String -> Int 
 timeToNumber time = case toInt time of

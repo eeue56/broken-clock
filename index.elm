@@ -1,6 +1,7 @@
 module BrokenClock where
 import Time exposing (every, second)
 import Signal exposing ((<~))
+import Random exposing (Seed, int, generate, initialSeed) 
 
 import Quarterly exposing (..)
 import Views exposing (..)
@@ -15,13 +16,21 @@ model : Clock
 model = { time = Time.second, 
   clockType = Quarterly,
   alarms = [],
-  parts = {hour=0, minute=0, second=0} }
+  parts = {hour=0, minute=0, second=0},
+  seed = initialSeed 5 }
 
 
 clockSignal = Signal.map (TimeUpdate) <| every second
 
 updateAlarms : Clock -> Clock
 updateAlarms clock = { clock | alarms <- List.map (setOffAlarm clock.time) clock.alarms }
+
+updateSeed : Clock -> Clock
+updateSeed clock = 
+  let
+    (_, newSeed) = generate (int 0 1) clock.seed
+  in
+    { clock | seed <- newSeed}
 
 updateAlarmParts : AlarmPart -> Clock -> Clock 
 updateAlarmParts part clock = 

@@ -8,27 +8,28 @@ import Alarms exposing (..)
 type ClockType = Hourly | Quarterly
 
 type alias RoughTime = {
-    hour: Int,
-    minute: Int,
-    second: Int
+    hour : Int,
+    minute : Int,
+    second : Int
 }
 
 type alias Clock = {
   time : Time.Time,
-  clockType: ClockType, 
-  alarms: List Alarm,
-  parts: RoughTime
+  clockType : ClockType, 
+  alarms : List Alarm,
+  parts : RoughTime,
+  seed : Seed
 }
 
-newRandomRoughTime : Seed -> (RoughTime, Seed)
+newRandomRoughTime : Seed -> RoughTime
 newRandomRoughTime seed = 
   let
-    (hour, seed') = generate (int 0 23) seed
-    (minute, seed'') = generate (int 0 59) seed'
-    (second, seed''') = generate (int 0 59) seed''
-    seed'''' = seed'''
+    (hour, _) = generate (int 0 23) seed
+    (minute, _) = generate (int 0 59) seed
+    (second, _) = generate (int 0 59) seed
+    
   in
-    ({ hour=hour, minute=minute, second=second }, seed'''')
+    { hour=hour, minute=minute, second=second }
 
 toClockType x = if
   | x == "Hourly" -> Hourly
